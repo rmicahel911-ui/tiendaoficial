@@ -6,7 +6,7 @@ import { Layers } from "lucide-react";
 import { site } from "@/lib/site";
 import { getCatalog } from "@/lib/tebex";
 
-export const revalidate = 60;
+export const revalidate = 0; // Se cambia a 0 para desactivar la caché de Next.js y ver los cambios al instante
 
 export const metadata: Metadata = {
   title: "Tienda Oficial | Rangos, Beneficios y Cosméticos",
@@ -17,6 +17,19 @@ export const metadata: Metadata = {
 
 export default async function CategoriesPage() {
   const catalog = await getCatalog();
+
+  // Filtramos asegurando comprobar parent, parent_category y parentId por compatibilidad de la API de Tebex
+  const rootCategories = catalog.categories.filter((category: any) => {
+    const hasParent =
+      category.parent !== null &&
+      category.parent !== undefined &&
+      category.parent_category !== null &&
+      category.parent_category !== undefined &&
+      category.parentId !== null &&
+      category.parentId !== undefined;
+
+    return !hasParent;
+  });
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 pb-16 pt-4 md:px-6">
@@ -38,13 +51,11 @@ export default async function CategoriesPage() {
         </div>
       ) : null}
 
-      {catalog.categories.length > 0 ? (
+      {rootCategories.length > 0 ? (
         <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {catalog.categories
-            .filter((category) => !category.parent && !category.parent_category)
-            .map((category) => (
-              <CategoryCard key={category.id} category={category} />
-            ))}
+          {rootCategories.map((category) => (
+            <CategoryCard key={category.id} category={category} />
+          ))}
         </div>
       ) : (
         <div className="rounded-2xl border-2 border-brand-deep bg-[#170a0e]/95 px-6 py-14 text-center shadow-[0_6px_0_#3a0a17]">
