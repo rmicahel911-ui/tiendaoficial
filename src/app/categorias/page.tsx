@@ -40,9 +40,11 @@ export default async function CategoriesPage() {
 
       {catalog.categories.length > 0 ? (
         <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {catalog.categories.map((category) => (
-            <CategoryCard key={category.id} category={category} />
-          ))}
+          {catalog.categories
+            .filter((category) => !category.parent && !category.parent_category)
+            .map((category) => (
+              <CategoryCard key={category.id} category={category} />
+            ))}
         </div>
       ) : (
         <div className="rounded-2xl border-2 border-brand-deep bg-[#170a0e]/95 px-6 py-14 text-center shadow-[0_6px_0_#3a0a17]">
