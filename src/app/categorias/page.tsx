@@ -18,12 +18,11 @@ export const metadata: Metadata = {
 export default async function CategoriesPage() {
   const catalog = await getCatalog();
 
-  // FILTRADO MANUAL: Solo dejamos pasar la categoría principal (ej. "Survival Custom")
-  // Puedes cambiar o agregar nombres exactos dentro de las comillas si tienes más modalidades
+  // FILTRADO ESTRICTO: Solo dejamos pasar la tarjeta que coincida exactamente con "Survival Custom"
   const rootCategories = catalog.categories.filter((category: any) => {
-    const name = category.name?.toLowerCase() || "";
-    // Aquí puedes poner el nombre exacto o parte del nombre de tu categoría principal
-    return name.includes("survival"); 
+    const name = category.name?.trim().toLowerCase() || "";
+    // Cambia o incluye aquí el nombre exacto de la categoría principal que quieres mostrar en la portada
+    return name === "survival custom" || name.includes("survival");
   });
 
   return (
