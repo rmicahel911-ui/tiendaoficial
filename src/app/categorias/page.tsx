@@ -6,7 +6,7 @@ import { Layers } from "lucide-react";
 import { site } from "@/lib/site";
 import { getCatalog } from "@/lib/tebex";
 
-export const revalidate = 0; // Se cambia a 0 para desactivar la caché de Next.js y ver los cambios al instante
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Tienda Oficial | Rangos, Beneficios y Cosméticos",
@@ -18,17 +18,12 @@ export const metadata: Metadata = {
 export default async function CategoriesPage() {
   const catalog = await getCatalog();
 
-  // Filtramos asegurando comprobar parent, parent_category y parentId por compatibilidad de la API de Tebex
+  // FILTRADO MANUAL: Solo dejamos pasar la categoría principal (ej. "Survival Custom")
+  // Puedes cambiar o agregar nombres exactos dentro de las comillas si tienes más modalidades
   const rootCategories = catalog.categories.filter((category: any) => {
-    const hasParent =
-      category.parent !== null &&
-      category.parent !== undefined &&
-      category.parent_category !== null &&
-      category.parent_category !== undefined &&
-      category.parentId !== null &&
-      category.parentId !== undefined;
-
-    return !hasParent;
+    const name = category.name?.toLowerCase() || "";
+    // Aquí puedes poner el nombre exacto o parte del nombre de tu categoría principal
+    return name.includes("survival"); 
   });
 
   return (
